@@ -45,33 +45,6 @@ Send the JWT as `Authorization: Bearer <token>` on protected routes.
 | PATCH | /admin/posts/reject/:id | admin | Reject pending post |
 | POST | /ai/improve/:postId | owner | Improve with Gemini, saved as a new draft (new ID); original preserved |
 
-### Example requests
-```bash
-# Register a normal user
-curl -X POST localhost:5000/auth/register -H "Content-Type: application/json" \
-  -d '{"name":"Deep","email":"deep@example.com","password":"secret123"}'
-
-# Register an admin
-curl -X POST localhost:5000/auth/register -H "Content-Type: application/json" \
-  -d '{"name":"Admin","email":"admin@example.com","password":"secret123","role":"admin","adminSecret":"<ADMIN_SECRET>"}'
-
-# Login
-curl -X POST localhost:5000/auth/login -H "Content-Type: application/json" \
-  -d '{"email":"deep@example.com","password":"secret123"}'
-
-# Create a draft
-curl -X POST localhost:5000/posts -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"title":"My first post","description":"Intro","content":"hello wrld, this is my fisrt post","category":"tech","status":"draft"}'
-
-# Submit for approval
-curl -X PATCH localhost:5000/posts/$ID -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-  -d '{"status":"pending"}'
-
-# AI improve (optionally attach a PDF/TXT reference with -F "file=@notes.pdf")
-curl -X POST localhost:5000/ai/improve/$ID -H "Authorization: Bearer $TOKEN"
-```
-
-## Behaviour notes
 - Users can only set `draft` or `pending`; `approved`/`rejected` are set by admins only.
 - Editing an approved/rejected post (without an explicit status) moves it back to `pending`.
 - Admins can only approve/reject posts that are `pending`.
